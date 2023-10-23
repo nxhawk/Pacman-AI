@@ -40,7 +40,7 @@ def readMapInFile(map_name: str):
     global N, M, _map
     _map = []
     N, M = int(x[0]), int(x[1])
-    for i in range(N):
+    for _ in range(N):
         line = f.readline().split()
         _m = []
         for j in range(M):
@@ -135,7 +135,7 @@ def generate_Ghost_new_position(_ghost, _type: int = 0) -> list[list[int]]:
     return _ghost_new_position
 
 
-def check_collision_ghost(_map, _ghost) -> bool:
+def check_collision_ghost(_ghost) -> bool:
     Pac_pos = PacMan.getRC()
     for g in _ghost:
         Ghost_pos = g.getRC()
@@ -245,7 +245,7 @@ def startGame() -> None:
                                 break
                         new_PacMan_Pos = []
 
-                if check_collision_ghost(_map, _ghost):
+                if check_collision_ghost(_ghost):
                     pac_can_move = False
                     done = True
                     status = -1
