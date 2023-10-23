@@ -237,3 +237,4 @@ def Ghost_move_level4(_map, start_row, start_col, end_row, end_col, N, M):
                 trace[group] = current
 
     return [start_row, start_col]
+
