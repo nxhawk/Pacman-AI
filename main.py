@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import random
 
@@ -7,7 +9,7 @@ from Object.Player import Player
 from Object.Wall import Wall
 from Utils.utils import DDX, isValid2
 from constants import *
-from Object.Menu import Menu
+from Object.Menu import Menu, Button
 
 N = M = Score = _state_PacMan = 0
 _map = []
@@ -177,7 +179,8 @@ def startGame() -> None:
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                done = True
+                pygame.quit()
+                sys.exit(0)
 
         if delay > 0:
             delay -= 1
@@ -244,6 +247,7 @@ def startGame() -> None:
 
                 if check_collision_ghost(_map, _ghost):
                     pac_can_move = False
+                    done = True
                     status = -1
 
                 if timer >= SIZE_WALL:
@@ -279,9 +283,9 @@ def startGame() -> None:
                             result.pop(0)
                             new_PacMan_Pos = result[0]
 
-                    elif len(result) > 0:
-                        new_PacMan_Pos = result[0]
+                    elif len(result) > 1:
                         result.pop(0)
+                        new_PacMan_Pos = result[0]
 
                 elif ALGORITHM == "DFS":
                     if len(result) <= 0:
@@ -290,9 +294,9 @@ def startGame() -> None:
                             result.pop(0)
                             new_PacMan_Pos = result[0]
 
-                    elif len(result) > 0:
-                        new_PacMan_Pos = result[0]
+                    elif len(result) > 1:
                         result.pop(0)
+                        new_PacMan_Pos = result[0]
 
                 elif Level == 1 or Level == 2 or ALGORITHM == "A*":
                     if len(result) <= 0:
@@ -301,9 +305,9 @@ def startGame() -> None:
                             result.pop(0)
                             new_PacMan_Pos = result[0]
 
-                    elif len(result) > 0:
-                        new_PacMan_Pos = result[0]
+                    elif len(result) > 1:
                         result.pop(0)
+                        new_PacMan_Pos = result[0]
 
                 elif (Level == 3 or Level == 4 or ALGORITHM == "LS") and len(_food_Position) > 0:
                     new_PacMan_Pos = local_search(_map, row, col, N, M, _visited)
@@ -319,14 +323,62 @@ def startGame() -> None:
         pygame.display.flip()
         clock.tick(FPS)
 
+    handleEndGame(status)
+
+
+done_2 = False
+
+
+def handleEndGame(status: int):
+    global done_2
+    done_2 = False
+    bg = pygame.image.load("images/gameover_bg.png")
+    bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+
+    def clickContinue():
+        global done_2
+        done_2 = True
+
+    def clickQuit():
+        pygame.quit()
+        sys.exit(0)
+
+    btnContinue = Button(WIDTH // 2 - 300, HEIGHT // 2 - 50, 200, 100, screen, "CONTINUE", clickContinue)
+    btnQuit = Button(WIDTH // 2 + 50, HEIGHT // 2 - 50, 200, 100, screen, "QUIT", clickQuit)
+
+    delay = 100
+    while not done_2:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit(0)
+
+        if delay > 0:
+            delay -= 1
+            pygame.display.flip()
+            clock.tick(FPS)
+            continue
+
+        if status == -1:
+            screen.blit(bg, (0, 0))
+        else:
+            pass
+        btnQuit.process()
+        btnContinue.process()
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
+    showMenu()
+
 
 def showMenu():
     _menu = Menu(screen)
     global Level, Map_name
     [Level, Map_name] = _menu.run()
+    startGame()
 
 
 if __name__ == '__main__':
     showMenu()
-    startGame()
     pygame.quit()
