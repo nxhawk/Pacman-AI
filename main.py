@@ -167,7 +167,7 @@ def change_direction_PacMan(new_row, new_col):
 def randomPacManNewPos(_map, row, col, _N, _M):
     for [d_r, d_c] in DDX:
         new_r, new_c = d_r + row, d_c + col
-        if isValid(_map, new_r, new_c, _N, _M):
+        if isValid2(_map, new_r, new_c, _N, _M):
             return [new_r, new_c]
 
 
