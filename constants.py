@@ -1,5 +1,5 @@
 # MAP_NAME: str = 'Map/map1.txt'
-ALGORITHM: str = "LS"
+ALGORITHM: str = "MINIMAX"
 
 # DEFINE COLOR
 BLACK = (0, 0, 0)

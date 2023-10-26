@@ -18,6 +18,7 @@ _road = []
 _food = []
 _ghost = []
 _food_Position = []
+_ghost_Position = []
 _visited = []
 PacMan: Player
 Level = 1
@@ -74,10 +75,11 @@ def check_Object(_map, row, col):
 
     if _map[row][col] == MONSTER:
         _ghost.append(Player(row, col, IMAGE_GHOST[len(_ghost) % len(IMAGE_GHOST)]))
+        _ghost_Position.append([row, col])
 
 
 def initData() -> None:
-    global N, M, _map, _food_Position, _food, _road, _wall, _ghost, _visited, Score, _state_PacMan
+    global N, M, _map, _food_Position, _food, _road, _wall, _ghost, _visited, Score, _state_PacMan, _ghost_Position
     N = M = Score = _state_PacMan = 0
     _map = []
     _wall = []
@@ -85,6 +87,7 @@ def initData() -> None:
     _food = []
     _ghost = []
     _food_Position = []
+    _ghost_Position = []
 
     readMapInFile(map_name=Map_name)
     _visited = [[0 for _ in range(M)] for _ in range(N)]
@@ -276,7 +279,7 @@ def startGame() -> None:
                 # thuật toán sẽ được cài đặt trong file Algorithms/SearchAlgorithms.py
                 # Hãy cài đặt lại level3, level4 =))
 
-                if ALGORITHM == "BFS":
+                if Level == 1 or Level == 2 or ALGORITHM == "BFS":
                     if len(result) <= 0:
                         result = BFS(_map, _food_Position.copy(), row, col, N, M)
                         if len(result) > 0:
@@ -309,9 +312,12 @@ def startGame() -> None:
                         result.pop(0)
                         new_PacMan_Pos = result[0]
 
-                elif (Level == 3 or Level == 4 or ALGORITHM == "LS") and len(_food_Position) > 0:
+                elif (Level == 3 or ALGORITHM == "LS") and len(_food_Position) > 0:
                     new_PacMan_Pos = local_search(_map, row, col, N, M, _visited)
                     _visited[row][col] += 1
+
+                elif (Level == 4 or ALGORITHM == "MINIMAX") and len(_food_Position) > 0:
+                    new_PacMan_Pos = minimaxAgent(_map, row, col, N, M, 4, Score)
 
                 if len(new_PacMan_Pos) > 0:
                     change_direction_PacMan(new_PacMan_Pos[0], new_PacMan_Pos[1])
