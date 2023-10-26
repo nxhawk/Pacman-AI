@@ -31,6 +31,7 @@ clock = pygame.time.Clock()
 
 pygame.font.init()
 my_font = pygame.font.SysFont('Comic Sans MS', 30)
+my_font_2 = pygame.font.SysFont('Comic Sans MS', 100)
 
 
 # ------------------------------------------
@@ -163,6 +164,13 @@ def change_direction_PacMan(new_row, new_col):
         PacMan.change_state(180, IMAGE_PACMAN[_state_PacMan])
 
 
+def randomPacManNewPos(_map, row, col, _N, _M):
+    for [d_r, d_c] in DDX:
+        new_r, new_c = d_r + row, d_c + col
+        if isValid(_map, new_r, new_c, _N, _M):
+            return [new_r, new_c]
+
+
 def startGame() -> None:
     global _map, _visited, Score
     _ghost_new_position = []
@@ -253,6 +261,10 @@ def startGame() -> None:
                     done = True
                     status = -1
 
+                if len(_food_Position) == 0:
+                    status = 1
+                    done = True
+
                 if timer >= SIZE_WALL:
                     is_moving = False
             else:
@@ -273,7 +285,6 @@ def startGame() -> None:
                 [row, col] = PacMan.getRC()
 
                 # cài đặt thuật toán ở đây, thay đổi ALGORITHM trong file constants.py
-                # Sẽ cài đặt Menu sau
                 # thuật toán chỉ cần trả về vị trí mới theo format [new_row, new_col] cho biến new_PacMan_Pos
                 # VD: new_PacMan_Pos = [4, 5]
                 # thuật toán sẽ được cài đặt trong file Algorithms/SearchAlgorithms.py
@@ -319,6 +330,8 @@ def startGame() -> None:
                 elif (Level == 4 or ALGORITHM == "MINIMAX") and len(_food_Position) > 0:
                     new_PacMan_Pos = minimaxAgent(_map, row, col, N, M, 4, Score)
 
+                if len(_food_Position) > 0 and (len(new_PacMan_Pos) == 0 or [row, col] == new_PacMan_Pos):
+                    new_PacMan_Pos = randomPacManNewPos(_map, row, col, N, M)
                 if len(new_PacMan_Pos) > 0:
                     change_direction_PacMan(new_PacMan_Pos[0], new_PacMan_Pos[1])
 
@@ -340,6 +353,8 @@ def handleEndGame(status: int):
     done_2 = False
     bg = pygame.image.load("images/gameover_bg.png")
     bg = pygame.transform.scale(bg, (WIDTH, HEIGHT))
+    bg_w = pygame.image.load("images/win.jpg")
+    bg_w = pygame.transform.scale(bg_w, (WIDTH, HEIGHT))
 
     def clickContinue():
         global done_2
@@ -368,7 +383,10 @@ def handleEndGame(status: int):
         if status == -1:
             screen.blit(bg, (0, 0))
         else:
-            pass
+            screen.blit(bg_w, (0, 0))
+            text_surface = my_font_2.render('Your Score: {Score}'.format(Score=Score), False, RED)
+            screen.blit(text_surface, (WIDTH // 4 - 65, 10))
+
         btnQuit.process()
         btnContinue.process()
 
