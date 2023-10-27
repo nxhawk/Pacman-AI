@@ -1,6 +1,13 @@
 # MAP_NAME: str = 'Map/map1.txt'
 ALGORITHM: str = "MINIMAX"
 
+LEVEL_TO_ALGORITHM = {
+    "LEVEL1": "BFS",
+    "LEVEL2": "BFS",
+    "LEVEL3": "Local Search",
+    "LEVEL4": "Minimax"
+}
+
 # DEFINE COLOR
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

@@ -3,7 +3,8 @@ import sys
 import pygame
 import random
 
-from Algorithms.SearchAlgorithms import *
+from Algorithms.Ghost_Move import Ghost_move_level4
+from Algorithms.SearchAgent import SearchAgent
 from Object.Food import Food
 from Object.Player import Player
 from Object.Wall import Wall
@@ -287,12 +288,13 @@ def startGame() -> None:
                 # cài đặt thuật toán ở đây, thay đổi ALGORITHM trong file constants.py
                 # thuật toán chỉ cần trả về vị trí mới theo format [new_row, new_col] cho biến new_PacMan_Pos
                 # VD: new_PacMan_Pos = [4, 5]
-                # thuật toán sẽ được cài đặt trong file Algorithms/SearchAlgorithms.py
+                # thuật toán sẽ được cài đặt trong folder Algorithms
                 # Hãy cài đặt lại level3, level4 =))
 
-                if Level == 1 or Level == 2 or ALGORITHM == "BFS":
+                search = SearchAgent(_map, _food_Position, row, col, N, M)
+                if Level == 1 or Level == 2:
                     if len(result) <= 0:
-                        result = BFS(_map, _food_Position.copy(), row, col, N, M)
+                        result = search.execute(ALGORITHMS=LEVEL_TO_ALGORITHM["LEVEL1"])
                         if len(result) > 0:
                             result.pop(0)
                             new_PacMan_Pos = result[0]
@@ -301,34 +303,12 @@ def startGame() -> None:
                         result.pop(0)
                         new_PacMan_Pos = result[0]
 
-                elif ALGORITHM == "DFS":
-                    if len(result) <= 0:
-                        result = DFS(_map, _food_Position.copy(), row, col, N, M)
-                        if len(result) > 0:
-                            result.pop(0)
-                            new_PacMan_Pos = result[0]
-
-                    elif len(result) > 1:
-                        result.pop(0)
-                        new_PacMan_Pos = result[0]
-
-                elif Level == 1 or Level == 2 or ALGORITHM == "A*":
-                    if len(result) <= 0:
-                        result = AStar(_map, _food_Position.copy(), row, col, N, M)
-                        if len(result) > 0:
-                            result.pop(0)
-                            new_PacMan_Pos = result[0]
-
-                    elif len(result) > 1:
-                        result.pop(0)
-                        new_PacMan_Pos = result[0]
-
-                elif (Level == 3 or ALGORITHM == "LS") and len(_food_Position) > 0:
-                    new_PacMan_Pos = local_search(_map, row, col, N, M, _visited)
+                elif Level == 3 and len(_food_Position) > 0:
+                    new_PacMan_Pos = search.execute(ALGORITHMS=LEVEL_TO_ALGORITHM["LEVEL3"], visited=_visited)
                     _visited[row][col] += 1
 
-                elif (Level == 4 or ALGORITHM == "MINIMAX") and len(_food_Position) > 0:
-                    new_PacMan_Pos = minimaxAgent(_map, row, col, N, M, 4, Score)
+                elif Level == 4 and len(_food_Position) > 0:
+                    new_PacMan_Pos = search.execute(ALGORITHMS=LEVEL_TO_ALGORITHM["LEVEL4"], depth=4, Score=Score)
 
                 if len(_food_Position) > 0 and (len(new_PacMan_Pos) == 0 or [row, col] == new_PacMan_Pos):
                     new_PacMan_Pos = randomPacManNewPos(_map, row, col, N, M)
