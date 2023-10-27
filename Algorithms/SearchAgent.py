@@ -2,6 +2,7 @@ from Algorithms.AStart import AStar
 from Algorithms.AlphaBetaPruning import AlphaBetaAgent
 from Algorithms.BFS import BFS
 from Algorithms.DFS import DFS
+from Algorithms.Expectimax import ExpectAgent
 from Algorithms.LocalSearch import local_search
 from Algorithms.Minimax import minimaxAgent
 
@@ -28,3 +29,5 @@ class SearchAgent:
             return minimaxAgent(self.map, self.start_row, self.start_col, self.N, self.M, depth, Score)
         if ALGORITHMS == "AlphaBetaPruning":
             return AlphaBetaAgent(self.map, self.start_row, self.start_col, self.N, self.M, depth, Score)
+        if ALGORITHMS == "Expect":
+            return ExpectAgent(self.map, self.start_row, self.start_col, self.N, self.M, depth, Score)

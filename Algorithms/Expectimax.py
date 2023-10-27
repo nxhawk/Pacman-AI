@@ -1,4 +1,4 @@
-from Utils.utils import Manhattan, DDX, isValid2, isValid
+from Utils.utils import Manhattan, DDX, isValid, isValid2
 from constants import FOOD, MONSTER, EMPTY
 
 _food_pos = []
@@ -17,8 +17,8 @@ def evaluationFunction(_map, pac_row, pac_col, N, M, score):
 
     # Consts
     INF = 100000000.0  # Infinite value
-    WEIGHT_FOOD = 100.0  # Food base value
-    WEIGHT_GHOST = -150.0  # Ghost base value
+    WEIGHT_FOOD = 5.0  # Food base value
+    WEIGHT_GHOST = -10.0  # Ghost base value
 
     _score = score
     if len(distancesToFoodList) > 0:
@@ -36,7 +36,7 @@ def evaluationFunction(_map, pac_row, pac_col, N, M, score):
     return _score
 
 
-def minimaxAgent(_map, pac_row, pac_col, N, M, depth, Score):
+def ExpectAgent(_map, pac_row, pac_col, N, M, depth, Score):
     def terminal(_map, _pac_row, _pac_col, _N, _M, _depth) -> bool:
         if _map[_pac_row][_pac_col] == MONSTER or _depth == 0:
             return True
@@ -48,56 +48,76 @@ def minimaxAgent(_map, pac_row, pac_col, N, M, depth, Score):
 
         return True
 
-    def min_value(_map, _pac_row, _pac_col, _N, _M, _depth, score):
+    def _expect(_map, _ghost, _pac_row, _pac_col, _N, _M, _depth, score, agent):
         if terminal(_map, _pac_row, _pac_col, _N, _M, _depth):
             return evaluationFunction(_map, _pac_row, _pac_col, _N, _M, score)
 
-        v = 10000000000000000
-        for row in range(_N):
-            for col in range(_M):
-                if _map[row][col] == MONSTER:
-                    for [_d_r, _d_c] in DDX:
-                        _new_r, _new_c = _d_r + row, _d_c + col
-                        if isValid2(_map, _new_r, _new_c, _N, _M):
-                            state = _map[_new_r][_new_c]
-                            _map[_new_r][_new_c] = MONSTER
-                            _map[row][col] = EMPTY
-                            v = min(v, max_value(_map, _pac_row, _pac_col, _N, _M, _depth - 1, score))
-                            _map[_new_r][_new_c] = state
-                            _map[row][col] = MONSTER
-        return v
+        if agent == -1:
+            v = float("-inf")
+        else:
+            v = 0
 
-    def max_value(_map, _pac_row, _pac_col, _N, _M, _depth, score):
-        if terminal(_map, _pac_row, _pac_col, _N, _M, _depth):
-            return evaluationFunction(_map, _pac_row, _pac_col, _N, _M, score)
+        if agent == -1:  # pacman move
+            for [_d_r, _d_c] in DDX:
+                _new_r, _new_c = _pac_row + _d_r, _pac_col + _d_c
+                if isValid(_map, _new_r, _new_c, _N, _M):
+                    state = _map[_new_r][_new_c]
+                    _map[_new_r][_new_c] = EMPTY
+                    if state == FOOD:
+                        score += 20
+                        _food_pos.pop(_food_pos.index((_new_r, _new_c)))
+                    else:
+                        score -= 1
+                    v = max(v, _expect(_map, _ghost, _new_r, _new_c, _N, _M, _depth, score, 0))
+                    _map[_new_r][_new_c] = state
+                    if state == FOOD:
+                        score -= 20
+                        _food_pos.append((_new_r, _new_c))
+                    else:
+                        score += 1
 
-        v = -10000000000000000
+            return v
+
+        pp = 0
+
+        nextAgent = agent + 1
+        if nextAgent == len(_ghost):
+            nextAgent = -1
+
+        if nextAgent == -1:
+            _depth -= 1
+
+        [g_r, g_c] = _ghost[agent]
         for [_d_r, _d_c] in DDX:
-            _new_r, _new_c = _pac_row + _d_r, _pac_col + _d_c
-            if isValid(_map, _new_r, _new_c, _N, _M):
+            _new_r, _new_c = g_r + _d_r, g_c + _d_c
+            if isValid2(_map, _new_r, _new_c, _N, _M):
+                pp += 1
+
+        p = 1.0 / pp
+
+        for [_d_r, _d_c] in DDX:
+            _new_r, _new_c = g_r + _d_r, g_c + _d_c
+            if isValid2(_map, _new_r, _new_c, _N, _M):
                 state = _map[_new_r][_new_c]
-                _map[_new_r][_new_c] = EMPTY
-                if state == FOOD:
-                    score += 20
-                    _food_pos.pop(_food_pos.index((_new_r, _new_c)))
-                else:
-                    score -= 1
-                v = max(v, min_value(_map, _new_r, _new_c, _N, _M, _depth - 1, score))
+                _map[_new_r][_new_c] = MONSTER
+                _map[g_r][g_c] = EMPTY
+                _ghost[agent][0], _ghost[agent][1] = _new_r, _new_c
+                v += p * min(v, _expect(_map, _ghost, _pac_row, _pac_col, _N, _M, _depth, score, nextAgent))
+                _ghost[agent][0], _ghost[agent][1] = g_r, g_c
                 _map[_new_r][_new_c] = state
-                if state == FOOD:
-                    score -= 20
-                    _food_pos.append((_new_r, _new_c))
-                else:
-                    score += 1
+                _map[g_r][g_c] = MONSTER
         return v
 
     res = []
     global _food_pos
     _food_pos = []
+    _ghost = []
     for _row in range(N):
         for _col in range(M):
             if _map[_row][_col] == FOOD:
                 _food_pos.append((_row, _col))
+            if _map[_row][_col] == MONSTER:
+                _ghost.append([_row, _col])
 
     for [d_r, d_c] in DDX:
         new_r, new_c = pac_row + d_r, pac_col + d_c
@@ -109,7 +129,7 @@ def minimaxAgent(_map, pac_row, pac_col, N, M, depth, Score):
                 _food_pos.pop(_food_pos.index((new_r, new_c)))
             else:
                 Score -= 1
-            res.append(([new_r, new_c], min_value(_map, new_r, new_c, N, M, depth, Score)))
+            res.append(([new_r, new_c], _expect(_map, _ghost, new_r, new_c, N, M, depth, Score, -1)))
             _map[new_r][new_c] = _state
             if _state == FOOD:
                 Score -= 20

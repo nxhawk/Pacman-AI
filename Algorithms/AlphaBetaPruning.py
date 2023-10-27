@@ -52,8 +52,12 @@ def AlphaBetaAgent(_map, pac_row, pac_col, N, M, depth, Score):
         if terminal(_map, _pac_row, _pac_col, _N, _M, _depth):
             return evaluationFunction(_map, _pac_row, _pac_col, _N, _M, score)
 
+        if agent == -1:
+            v = float("-inf")
+        else:
+            v = float("inf")
+
         if agent == -1:  # pacman move
-            value = -100000000000000
             for [_d_r, _d_c] in DDX:
                 _new_r, _new_c = _pac_row + _d_r, _pac_col + _d_c
                 if isValid(_map, _new_r, _new_c, _N, _M):
@@ -64,19 +68,18 @@ def AlphaBetaAgent(_map, pac_row, pac_col, N, M, depth, Score):
                         _food_pos.pop(_food_pos.index((_new_r, _new_c)))
                     else:
                         score -= 1
-                    value = max(value,
-                                alphabeta(_map, _ghost, _new_r, _new_c, _N, _M, _depth, score, alpha, beta, 0))
+                    v = max(v,
+                            alphabeta(_map, _ghost, _new_r, _new_c, _N, _M, _depth, score, alpha, beta, 0))
                     _map[_new_r][_new_c] = state
                     if state == FOOD:
                         score -= 20
                         _food_pos.append((_new_r, _new_c))
                     else:
                         score += 1
-                    alpha = max(alpha, value)
+                    alpha = max(alpha, v)
                     if beta <= alpha:  # alpha-beta pruning
                         break
-            return value
-
+            return v
         nextAgent = agent + 1
         if nextAgent == len(_ghost):
             nextAgent = -1
@@ -85,7 +88,6 @@ def AlphaBetaAgent(_map, pac_row, pac_col, N, M, depth, Score):
             _depth -= 1
 
         [g_r, g_c] = _ghost[agent]
-        value = 100000000000000
         for [_d_r, _d_c] in DDX:
             _new_r, _new_c = g_r + _d_r, g_c + _d_c
             if isValid2(_map, _new_r, _new_c, _N, _M):
@@ -93,19 +95,19 @@ def AlphaBetaAgent(_map, pac_row, pac_col, N, M, depth, Score):
                 _map[_new_r][_new_c] = MONSTER
                 _map[g_r][g_c] = EMPTY
                 _ghost[agent][0], _ghost[agent][1] = _new_r, _new_c
-                value = min(value, alphabeta(_map, _ghost, _pac_row, _pac_col, _N, _M, _depth, score, alpha, beta,
-                                             nextAgent))
+                v = min(v, alphabeta(_map, _ghost, _pac_row, _pac_col, _N, _M, _depth, score, alpha, beta,
+                                     nextAgent))
                 _ghost[agent][0], _ghost[agent][1] = g_r, g_c
                 _map[_new_r][_new_c] = state
                 _map[g_r][g_c] = MONSTER
-                beta = min(beta, value)
+                beta = min(beta, v)
                 if beta <= alpha:  # alpha-beta pruning
                     break
-        return value
+        return v
 
     res = []
-    _alpha = -100000000000000
-    _beta = 100000000000000
+    _alpha = float("-inf")
+    _beta = float("inf")
     global _food_pos
     _food_pos = []
     _ghost = []
