@@ -140,8 +140,10 @@ def generate_Ghost_new_position(_ghost, _type: int = 0) -> list[list[int]]:
     return _ghost_new_position
 
 
-def check_collision_ghost(_ghost) -> bool:
-    Pac_pos = PacMan.getRC()
+def check_collision_ghost(_ghost, pac_row=-1, pac_col=-1) -> bool:
+    Pac_pos = [pac_row, pac_col]
+    if pac_row == -1:
+        Pac_pos = PacMan.getRC()
     for g in _ghost:
         Ghost_pos = g.getRC()
         if Pac_pos == Ghost_pos:
@@ -314,6 +316,10 @@ def startGame() -> None:
                     new_PacMan_Pos = randomPacManNewPos(_map, row, col, N, M)
                 if len(new_PacMan_Pos) > 0:
                     change_direction_PacMan(new_PacMan_Pos[0], new_PacMan_Pos[1])
+                    if check_collision_ghost(_ghost, new_PacMan_Pos[0], new_PacMan_Pos[1]):
+                        pac_can_move = False
+                        done = True
+                        status = -1
 
         # ------------------------------------------------------
 
