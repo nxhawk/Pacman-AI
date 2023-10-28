@@ -17,8 +17,8 @@ def evaluationFunction(_map, pac_row, pac_col, N, M, score):
 
     # Consts
     INF = 100000000.0  # Infinite value
-    WEIGHT_FOOD = 5.0  # Food base value
-    WEIGHT_GHOST = -10.0  # Ghost base value
+    WEIGHT_FOOD = 100.0  # Food base value
+    WEIGHT_GHOST = -150.0  # Ghost base value
 
     _score = score
     if len(distancesToFoodList) > 0:
@@ -75,18 +75,18 @@ def minimaxAgent(_map, pac_row, pac_col, N, M, depth, Score):
         for [_d_r, _d_c] in DDX:
             _new_r, _new_c = _pac_row + _d_r, _pac_col + _d_c
             if isValid(_map, _new_r, _new_c, _N, _M):
-                state = _map[new_r][new_c]
-                _map[new_r][new_c] = EMPTY
+                state = _map[_new_r][_new_c]
+                _map[_new_r][_new_c] = EMPTY
                 if state == FOOD:
                     score += 20
-                    _food_pos.pop(_food_pos.index((new_r, new_c)))
+                    _food_pos.pop(_food_pos.index((_new_r, _new_c)))
                 else:
                     score -= 1
                 v = max(v, min_value(_map, _new_r, _new_c, _N, _M, _depth - 1, score))
-                _map[new_r][new_c] = state
+                _map[_new_r][_new_c] = state
                 if state == FOOD:
                     score -= 20
-                    _food_pos.append((new_r, new_c))
+                    _food_pos.append((_new_r, _new_c))
                 else:
                     score += 1
         return v
