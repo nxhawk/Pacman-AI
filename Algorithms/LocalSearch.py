@@ -14,11 +14,11 @@ def calc_heuristic(_map, visited, start_row, start_col, new_row, new_col, N, M, 
 
     score = 0
     if _map[new_row][new_col] == FOOD:
-        score = 1000 - depth * 10
+        score += 1000 - depth * 10
     elif _map[new_row][new_col] == MONSTER and depth <= 2:
         return -float("inf")
     else:
-        score = 100 - depth * 10
+        score += 100 - depth * 10
 
     for [d_r, d_c] in DDX:
         new_row_r, new_col_c = new_row + d_r, new_col + d_c

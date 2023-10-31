@@ -193,8 +193,8 @@ def startGame() -> None:
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit(0)
+                showMenu()
+                return
 
         if delay > 0:
             delay -= 1
