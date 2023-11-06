@@ -23,7 +23,7 @@ _ghost_Position = []
 _visited = []
 PacMan: Player
 Level = 1
-Map_name = "Map/map1_level1.txt"
+Map_name = ""
 
 # Initial Pygame --------------------------
 screen = pygame.display.set_mode((WIDTH, HEIGHT))

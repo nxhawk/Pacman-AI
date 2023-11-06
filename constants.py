@@ -1,4 +1,3 @@
-# MAP_NAME: str = 'Map/map1.txt'
 ALGORITHM: str = "MINIMAX"
 
 LEVEL_TO_ALGORITHM = {

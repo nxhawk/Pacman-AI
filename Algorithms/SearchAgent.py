@@ -1,4 +1,4 @@
-from Algorithms.AStart import AStar
+from Algorithms.AStar import AStar
 from Algorithms.AlphaBetaPruning import AlphaBetaAgent
 from Algorithms.BFS import BFS
 from Algorithms.DFS import DFS

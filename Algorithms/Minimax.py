@@ -14,6 +14,8 @@ def evaluationFunction(_map, pac_row, pac_col, N, M, score):
                 distancesToFoodList.append(Manhattan(row, col, pac_row, pac_col))
             if _map[row][col] == MONSTER:
                 ghost_pos.append([row, col])
+            if _map[row][col] == EMPTY:
+                score += 5
 
     # Consts
     INF = 100000000.0  # Infinite value

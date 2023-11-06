@@ -104,36 +104,32 @@ class Menu:
     def _load_map_level_1(self):
         if self.clicked:
             self.current_level = 1
-            for file in os.listdir('Map'):
-                if file.__contains__("level1"):
-                    self.map_name.append(file)
+            for file in os.listdir('../Input/Level1'):
+                self.map_name.append('../Input/Level1/' + file)
             self.current_screen = 3
         self.clicked = False
 
     def _load_map_level_2(self):
         if self.clicked:
             self.current_level = 2
-            for file in os.listdir('Map'):
-                if file.__contains__("level2"):
-                    self.map_name.append(file)
+            for file in os.listdir('../Input/Level2'):
+                self.map_name.append('../Input/Level2/' + file)
             self.current_screen = 3
         self.clicked = False
 
     def _load_map_level_3(self):
         if self.clicked:
             self.current_level = 3
-            for file in os.listdir('Map'):
-                if file.__contains__("level3"):
-                    self.map_name.append(file)
+            for file in os.listdir('../Input/Level3'):
+                self.map_name.append('../Input/Level3/' + file)
             self.current_screen = 3
         self.clicked = False
 
     def _load_map_level_4(self):
         if self.clicked:
             self.current_level = 4
-            for file in os.listdir('Map'):
-                if file.__contains__("level4"):
-                    self.map_name.append(file)
+            for file in os.listdir('../Input/Level4'):
+                self.map_name.append('../Input/Level4/' + file)
             self.current_screen = 3
         self.clicked = False
 
@@ -142,7 +138,6 @@ class Menu:
             'LEVEL {level} - MAP {map}'.format(level=self.current_level, map=self.current_map + 1), False, WHITE)
         self.screen.blit(text_surface, (WIDTH // 2 - 270, 0))
 
-        fileName = "Map/" + fileName
         f = open(fileName, "r")
         x = f.readline().split()
         count_ghost = 0
@@ -228,4 +223,4 @@ class Menu:
             pygame.display.flip()
             clock.tick(FPS)
 
-        return [self.current_level, "Map/" + self.map_name[self.current_map]]
+        return [self.current_level, self.map_name[self.current_map]]
