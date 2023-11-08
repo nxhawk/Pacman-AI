@@ -80,14 +80,14 @@ def minimaxAgent(_map, pac_row, pac_col, N, M, depth, Score):
                 state = _map[_new_r][_new_c]
                 _map[_new_r][_new_c] = EMPTY
                 if state == FOOD:
-                    score += 20
+                    score += 19
                     _food_pos.pop(_food_pos.index((_new_r, _new_c)))
                 else:
                     score -= 1
                 v = max(v, min_value(_map, _new_r, _new_c, _N, _M, _depth - 1, score))
                 _map[_new_r][_new_c] = state
                 if state == FOOD:
-                    score -= 20
+                    score -= 19
                     _food_pos.append((_new_r, _new_c))
                 else:
                     score += 1
@@ -107,14 +107,14 @@ def minimaxAgent(_map, pac_row, pac_col, N, M, depth, Score):
             _state = _map[new_r][new_c]
             _map[new_r][new_c] = EMPTY
             if _state == FOOD:
-                Score += 20
+                Score += 19
                 _food_pos.pop(_food_pos.index((new_r, new_c)))
             else:
                 Score -= 1
             res.append(([new_r, new_c], min_value(_map, new_r, new_c, N, M, depth, Score)))
             _map[new_r][new_c] = _state
             if _state == FOOD:
-                Score -= 20
+                Score -= 19
                 _food_pos.append((new_r, new_c))
             else:
                 Score += 1

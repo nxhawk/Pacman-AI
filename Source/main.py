@@ -255,7 +255,7 @@ def startGame() -> None:
                                 _map[row_food][col_food] = EMPTY
                                 _food.pop(idx)
                                 _food_Position.pop(idx)
-                                Score += 21
+                                Score += 20
                                 break
                         new_PacMan_Pos = []
 
@@ -291,7 +291,6 @@ def startGame() -> None:
                 # thuật toán chỉ cần trả về vị trí mới theo format [new_row, new_col] cho biến new_PacMan_Pos
                 # VD: new_PacMan_Pos = [4, 5]
                 # thuật toán sẽ được cài đặt trong folder Algorithms
-                # Hãy cài đặt lại level3, level4 =))
 
                 search = SearchAgent(_map, _food_Position, row, col, N, M)
                 if Level == 1 or Level == 2:
