@@ -1,6 +1,6 @@
 # Pacman AI - PROJECT 01: SEARCH - HCMUS
 
-  <img align="right" width="100%" src="https://github.com/nxhawk/PacMan_AI/assets/92797788/a0b997a6-d423-4886-947f-f3ecb9819dc0">
+  <img align="right" width="100%" src="https://github.com/nxhawk/PacMan_AI/assets/92797788/9d0bba9d-4ddc-47ec-9d5b-f8059fcc71aa">
 
 
 
