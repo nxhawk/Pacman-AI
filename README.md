@@ -52,7 +52,7 @@ test the algorithms' abilities to handle difficult situations.
 
 ## How to run
 
-`Bước 1:` Run command line `git clone https://github.com/nxhawk/PacMan_AI.git`
+`Bước 1:` Run command line `git clone https://github.com/nxhawk/Pacman-AI-HCMUS.git`
 
 `Bước 2:` Bật console <b>cùng cấp</b> với file `main.py` (trong thư mục <b>Source</b>).
 
